@@ -1,0 +1,39 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<table class="table">
+  <thead class="thead-dark">
+
+      <th scope="col">AnuncioBOE</th>
+      <th scope="col">Cantidadreclamada</th>
+      <th scope="col">Fechadeconclusión</th>
+      <th scope="col">Fechadeinicio</th>
+      <th scope="col">Identificador</th>
+      <th scope="col">Importedeldepósito</th>
+      <th scope="col">Lotes</th>
+      <th scope="col">Pujamínima</th>
+      <th scope="col">Tasación</th>
+      <th scope="col">Tipodesubasta</th>
+      <th scope="col">Tramosentrepujas</th>
+      <th scope="col">Valorsubasta</th>
+
+  </thead>
+  <tbody>
+  <div *ngFor="let subasta of subastas; let i = index">
+    <tr>
+      <td >{{subasta.AnuncioBOE}}</td>
+      <td >{{subasta.Cantidadreclamada}}</td>
+      <td >{{subasta.Fechadeconclusion}}</td>
+      <td >{{subasta.Fechadeinicio}}</td>
+      <td >{{subasta.Identificador}}</td>
+      <td >{{subasta.Importedeldeposito}}</td>
+      <td >{{subasta.Lotes}}</td>
+      <td >{{subasta.Pujaminima}}</td>
+      <td >{{subasta.Tasacion}}</td>
+      <td >{{subasta.Tipodesubasta}}</td>
+      <td >{{subasta.Tramosentrepujas}}</td>
+      <td >{{subasta.Valorsubasta}}</td>
+    </tr>
+    
+  </div> 
+      
+  </tbody>
+</table>
