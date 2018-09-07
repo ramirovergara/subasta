@@ -10,6 +10,7 @@ import {ChildProcessService} from 'ngx-childprocess';
 export class AppComponent implements OnInit {
   title = 'app';
   subastas = [];
+  subastasTotal = [];
   constructor(private subastasService: ServicesService,
     private childProcessService: ChildProcessService)  {}
 
@@ -21,9 +22,29 @@ export class AppComponent implements OnInit {
     //   console.log(error, stdout, stderr);
     // });
     this.subastasService.getSubastas().subscribe(response => {
-      console.log('response: ', response);
-      this.subastas = response;
+      this.subastasTotal = response;
+      this.subastasTotal = this.subastasTotal.map(subas => {
+        // tslint:disable-next-line:radix
+        // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
+
+        let recla = this.amountToNumber(subas.Cantidadreclamada);
+        let tasa = this.amountToNumber(subas.Tasacion);
+        if (tasa !== null && recla !== null) {
+            subas['porcentaje'] = Math.round( (recla * 100) / tasa * 100 ) / 100;
+        } else {
+          subas['porcentaje'] = 2000;
+        }
+
+        return subas;
+      });
+      this.subastas = this.subastasTotal.filter(subas => subas.porcentaje <= 25);
+      //this.subastas = this.subastasTotal;
+      console.log('response: ', this.subastas);
     });
+  }
+
+  amountToNumber(value) {
+    return value ? value.split('.').join('').replace('€', '').replace(',', '.') : null;
   }
 
 }

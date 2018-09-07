@@ -1,0 +1,19 @@
+.app {
+    padding: 100px;
+    background: #fcffff;
+    font-size: 12px;
+}
+
+th {
+    text-align: left;
+}
+tr {
+    background: white;
+}
+.title {
+    font-weight: 900;
+}
+
+.number {
+    text-align: right;
+}

@@ -99,6 +99,7 @@ casper.start('https://subastas.boe.es/', function() {
                         //     height: 1000
                         // });
                         var subastaInfo = this.evaluate(getDatosSubastas);
+                        subastaInfo.link = this.getCurrentUrl();
                         // console.log(JSON.stringify(subastaInfo));
                         listSubasta.push(subastaInfo);
                         fs.write("./subasta-app/src/assets/subasta.json", JSON.stringify(listSubasta), 'w');
@@ -127,6 +128,7 @@ casper.start('https://subastas.boe.es/', function() {
                                     //     height: 1000
                                     // });
                                     var subastaInfo = this.evaluate(getDatosSubastas);
+                                    subastaInfo.link = this.getCurrentUrl();
                                     //console.log(JSON.stringify(subastaInfo));
                                     fs.write("./subasta-app/src/assets/subasta.json", JSON.stringify(subastaInfo), 'w');
                                     listSubasta.push(subastaInfo);

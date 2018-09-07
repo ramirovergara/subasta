@@ -118,5 +118,10 @@
       }
     }
   },
-  "defaultProject": "subasta-app"
+  "defaultProject": "subasta-app",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }

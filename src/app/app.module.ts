@@ -4,10 +4,12 @@ import {NgxChildProcessModule} from 'ngx-childprocess';
 
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FormatDatePipe } from './shared/format-date.pipe';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    FormatDatePipe
   ],
   imports: [
     BrowserModule,
