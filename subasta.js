@@ -67,12 +67,12 @@ function getNextLinkPage() {
 
 casper.start('https://subastas.boe.es/', function() {
     this.echo(this.getTitle());
-    this.capture('google.png', {
-        top: 200,
-        left: 400,
-        width: 700,
-        height: 700
-    });
+    // this.capture('google.png', {
+    //     top: 200,
+    //     left: 400,
+    //     width: 700,
+    //     height: 700
+    // });
     links = this.evaluate(getLinks);
     this.log('and an informative one', 'info');
     console.log('links: ', links.length);
@@ -102,7 +102,7 @@ casper.start('https://subastas.boe.es/', function() {
                         subastaInfo.link = this.getCurrentUrl();
                         // console.log(JSON.stringify(subastaInfo));
                         listSubasta.push(subastaInfo);
-                        fs.write("./subasta-app/src/assets/subasta.json", JSON.stringify(listSubasta), 'w');
+                        fs.write("./subasta/src/assets/subasta.json", JSON.stringify(listSubasta), 'w');
                     });
                 });
             });
@@ -130,7 +130,7 @@ casper.start('https://subastas.boe.es/', function() {
                                     var subastaInfo = this.evaluate(getDatosSubastas);
                                     subastaInfo.link = this.getCurrentUrl();
                                     //console.log(JSON.stringify(subastaInfo));
-                                    fs.write("./subasta-app/src/assets/subasta.json", JSON.stringify(subastaInfo), 'w');
+                                    fs.write("./subasta/src/assets/subasta.json", JSON.stringify(subastaInfo), 'w');
                                     listSubasta.push(subastaInfo);
                                 });
                             });
@@ -142,7 +142,7 @@ casper.start('https://subastas.boe.es/', function() {
         });
         //console.log('link: ', link, ' : ',casper.getTitle());
     });
-    fs.write("./subasta-app/src/assets/subasta.json", JSON.stringify(listSubasta), 'w');
+    fs.write("./subasta/src/assets/subasta.json", JSON.stringify(listSubasta), 'w');
 });
 
 // casper.thenOpen('http://phantomjs.org', function() {
