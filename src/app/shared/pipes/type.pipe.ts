@@ -10,7 +10,7 @@ export class TypePipe implements PipeTransform {
       return 'Apremio';
     } else if (value.trim() === 'JUDICIAL VOLUNTARIA') {
       return 'Voluntaria';
-    } else if ('JUDICIAL CONCURSAL') {
+    } else if (value.trim() === 'JUDICIAL CONCURSAL') {
       return 'Concursal';
     }
     return value;
