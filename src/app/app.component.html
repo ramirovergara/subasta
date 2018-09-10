@@ -17,7 +17,6 @@
           <th scope="col" (click)="orderByText('Identificador', 'isId')">Identificador</th>
           <th scope="col" (click)="orderByDatetime()">Fecha END</th>
           <th scope="col" (click)="orderByText('Tipodesubasta', 'isType')">Tipo subasta</th>
-          <th class="number" scope="col" (click)="orderByNumber('Importedeldeposito', 'isDeposit')">Depósito</th>
           <th class="number" scope="col" (click)="orderByNumber('Cantidadreclamada', 'isRequest')">Reclamado</th>
           <th class="number" scope="col" (click)="orderByNumber('Valorsubasta', 'isValue')">Valor subasta</th>
           <th class="number" scope="col" (click)="orderByNumber('porcentaje', 'isPercentaje')">%</th>
@@ -28,7 +27,6 @@
           <td ><a href={{subasta.link}}>{{subasta.Identificador}}</a> </td>
           <td >{{subasta.Fechadeconclusion | formatDate}}</td>
           <td >{{subasta.Tipodesubasta | type }}</td>
-          <td class="number">{{subasta.Importedeldeposito | typeNumber}}</td>
           <td class="number">{{subasta.Cantidadreclamada | typeNumber}}</td>
           <td class="number">{{subasta.Valorsubasta | typeNumber}}</td>
           <td class="number">{{subasta.porcentaje | parseInt}}</td>
