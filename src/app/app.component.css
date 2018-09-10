@@ -1,11 +1,16 @@
 .app {
-    padding: 100px;
+    padding-top: 50px;
     background: #fcffff;
     font-size: 12px;
 }
 
 th {
     text-align: left;
+    cursor: pointer;
+    
+}
+th:hover {
+    opacity: 0.9;
 }
 tr {
     background: white;

@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FormatDatePipe implements PipeTransform {
 
   transform(value: any, args?: any): any {
-    return value.split('CET')[0].split('-').join('/').trim();
+    return value.split(':')[0].split('-').join('/').trim() + 'h';
   }
 
 }

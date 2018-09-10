@@ -1,29 +1,39 @@
 <div class="app">
-  <table class="table table-striped">
-    <thead class="thead-dark">
-        <th scope="col">#</th>
-        <th scope="col">Identificador</th>
-        <th scope="col">Fecha de conclusión</th>    
-        <th scope="col">Tipo de subasta</th>
-        <th class="number" scope="col">Importe del depósito</th>
-        <th class="number" scope="col">Cantidad reclamada</th>
-        <th class="number" scope="col">Tasación</th>
-        <th class="number" scope="col">Valor subasta</th>
-        <th class="number" scope="col">porcentaje</th>
-    </thead>
-    <tbody>
-    <tr *ngFor="let subasta of subastas; let i = index">
-        <td class="title"> {{i + 1}}</td>
-        <td ><a href={{subasta.link}}>{{subasta.Identificador}}</a> </td>
-        <td >{{subasta.Fechadeconclusion | formatDate}}</td>
-        <td >{{subasta.Tipodesubasta}}</td>
-        <td class="number">{{subasta.Importedeldeposito}}</td>
-        <td class="number">{{subasta.Cantidadreclamada}}</td>
-        <td class="number">{{subasta.Tasacion}}</td>
-        <td class="number">{{subasta.Valorsubasta}}</td>
-        <td class="number">{{subasta.porcentaje}}</td>
-      </tr>
-        
-    </tbody>
-  </table>
+  <div class="container">
+    <div class="row align-items-end">
+        <div class="col-md-3 offset-md-9 input-group mb-3">
+          <input #percentaje type="text" class="form-control" 
+            placeholder="porcetanje maximo" 
+            aria-label="porcetanje maximo" 
+            aria-describedby="basic-addon2" value="25">
+          <div class="input-group-append">
+            <button class="btn btn-dark" type="button" (click)="filterPercentaje(percentaje.value)">buscar %</button>
+          </div>
+        </div>
+    </div>
+    <table class="table table-striped">
+      <thead class="thead-dark">
+          <th scope="col">#</th>
+          <th scope="col" (click)="orderByText('Identificador', 'isId')">Identificador</th>
+          <th scope="col" (click)="orderByDatetime()">Fecha END</th>
+          <th scope="col" (click)="orderByText('Tipodesubasta', 'isType')">Tipo subasta</th>
+          <th class="number" scope="col" (click)="orderByNumber('Importedeldeposito', 'isDeposit')">Depósito</th>
+          <th class="number" scope="col" (click)="orderByNumber('Cantidadreclamada', 'isRequest')">Reclamado</th>
+          <th class="number" scope="col" (click)="orderByNumber('Valorsubasta', 'isValue')">Valor subasta</th>
+          <th class="number" scope="col" (click)="orderByNumber('porcentaje', 'isPercentaje')">%</th>
+      </thead>
+      <tbody>
+      <tr *ngFor="let subasta of subastas; let i = index">
+          <td class="title"> {{i + 1}}</td>
+          <td ><a href={{subasta.link}}>{{subasta.Identificador}}</a> </td>
+          <td >{{subasta.Fechadeconclusion | formatDate}}</td>
+          <td >{{subasta.Tipodesubasta | type }}</td>
+          <td class="number">{{subasta.Importedeldeposito | typeNumber}}</td>
+          <td class="number">{{subasta.Cantidadreclamada | typeNumber}}</td>
+          <td class="number">{{subasta.Valorsubasta | typeNumber}}</td>
+          <td class="number">{{subasta.porcentaje | parseInt}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
