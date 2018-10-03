@@ -1,5 +1,23 @@
 <div class="app">
+  
   <div class="container">
+    <div class="row center">
+        <h5 class="center width-100">
+          <span class="badge badge-dark">{{progressLoading}} de {{totalSubasta}} </span>
+           subastas analizadas
+          actualmente analizando 
+          <span class="badge badge-dark">{{provinceCurrent}}</span>
+      </h5>
+    </div>
+    <div class="progress" *ngIf="loadingNumber != 100">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" 
+        role="progressbar" 
+        [ngStyle]="{'width': loadingNumber + '%'}"
+        aria-valuenow="50" 
+        aria-valuemin="0" 
+        aria-valuemax="100">{{loadingNumber}}%
+      </div>
+    </div>
     <div class="row align-items-end">
         <div class="col-md-3 offset-md-9 input-group mb-3">
           <input #percentaje type="text" class="form-control" 
@@ -11,6 +29,7 @@
           </div>
         </div>
     </div>
+    
     <table class="table table-striped">
       <thead class="thead-dark">
           <th scope="col">#</th>

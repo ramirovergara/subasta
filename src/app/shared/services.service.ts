@@ -8,11 +8,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ServicesService {
-
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {
+    const debug = true;
+    //domain = debug ? 'http://localhost:4300' : '';
+  }
 
   getSubastas(): Observable<any> {
-    return this.httpClient.get('assets/subasta.json');
+    return this.httpClient.get('http://localhost:4300/api/subastas');
+  }
+
+  getProgress(): Observable<any> {
+    return this.httpClient.get('http://localhost:4300/api/log');
   }
 
   private handleError(error: any) {

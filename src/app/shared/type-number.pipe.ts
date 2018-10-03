@@ -6,7 +6,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class TypeNumberPipe implements PipeTransform {
 
   transform(value: any, args?: any): any {
-    return value.split(',')[0].trim();
+    if (value) {
+      return value.split(',')[0].trim();
+    } else {
+      return value;
+    }
   }
 
 }

@@ -6,7 +6,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class MediatorService {
-  private param: BehaviorSubject<any> = new BehaviorSubject(null);
+    private param: BehaviorSubject<any> = new BehaviorSubject(null);
     constructor() { }
     emitParam(param: any) {
         this.param.next(param);
