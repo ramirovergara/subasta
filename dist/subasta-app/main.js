@@ -72,16 +72,11 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var AppComponent = /** @class */ (function () {
     function AppComponent(subastasService, childProcessService) {
-        var _this = this;
         this.subastasService = subastasService;
         this.childProcessService = childProcessService;
         this.title = 'app';
         this.subastas = [];
         this.subastasTotal = [];
-        this.loadingNumber = 0;
-        this.totalSubasta = 0;
-        this.progressLoading = 0;
-        this.provinceCurrent = 'Alava';
         this.flags = {
             isId: false,
             isDate: false,
@@ -91,12 +86,6 @@ var AppComponent = /** @class */ (function () {
             isValue: false,
             isPercentaje: false
         };
-        this.subastasService.getProgress().subscribe(function (result) {
-            console.log(result);
-            _this.totalSubasta = result.total;
-            _this.progressLoading = result.progress;
-            _this.loadingNumber = parseInt(((Number(result.progress) * 100 / result.total) * 100) + '', 10) / 100;
-        });
     }
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -106,29 +95,22 @@ var AppComponent = /** @class */ (function () {
         // childProces.exec('ls', [], function (error, stdout, stderr) {
         //   console.log(error, stdout, stderr);
         // });
-        this.getProgress();
         this.subastasService.getSubastas().subscribe(function (response) {
-            _this.subastasTotal = response.subastas;
-            console.log('response: ', response);
-            if (response) {
-                _this.subastasTotal = _this.subastasTotal.map(function (subas) {
-                    // tslint:disable-next-line:radix
-                    // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
-                    var recla = _this.amountToNumber(subas.Cantidadreclamada);
-                    var tasa = _this.amountToNumber(subas.Valorsubasta);
-                    if (tasa !== null && recla !== null) {
-                        subas['porcentaje'] = Math.round((recla * 100) / tasa * 100) / 100;
-                    }
-                    else {
-                        subas['porcentaje'] = 2000;
-                    }
-                    return subas;
-                });
-            }
-            else {
-                _this.subastasTotal = [];
-            }
-            _this.subastas = _this.subastasTotal.filter(function (subas) { return subas.porcentaje <= 25; });
+            _this.subastasTotal = response;
+            _this.subastasTotal = _this.subastasTotal.map(function (subas) {
+                // tslint:disable-next-line:radix
+                // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
+                var recla = _this.amountToNumber(subas.Cantidadreclamada);
+                var tasa = _this.amountToNumber(subas.Valorsubasta);
+                if (tasa !== null && recla !== null) {
+                    subas['porcentaje'] = Math.round((recla * 100) / tasa * 100) / 100;
+                }
+                else {
+                    subas['porcentaje'] = 2000;
+                }
+                return subas;
+            });
+            _this.subastas = _this.subastasTotal.filter(function (subas) { return subas.porcentaje <= 30; });
             _this.orderByDatetime();
             //this.subastas = this.subastasTotal;
             console.log('response: ', _this.subastas);
@@ -177,59 +159,6 @@ var AppComponent = /** @class */ (function () {
     };
     AppComponent.prototype.filterPercentaje = function (value) {
         this.subastas = this.subastasTotal.filter(function (subas) { return subas.porcentaje <= parseInt(value); });
-    };
-    AppComponent.prototype.getProgress = function () {
-        var _this = this;
-        setTimeout(function () {
-            _this.subastasService.getProgress().subscribe(function (result) {
-                console.log(result);
-                _this.getSubastas();
-                // tslint:disable-next-line:radix
-                if (result && result.message != 'error') {
-                    _this.loadingNumber = parseInt(((Number(result.progress) * 100 / result.total) * 100) + '', 10) / 100;
-                    _this.totalSubasta = result.total;
-                    if (_this.progressLoading === result.progress && result.progress !== 0) {
-                        _this.loadingNumber = 100;
-                    }
-                    else {
-                        _this.progressLoading = result.progress;
-                        _this.provinceCurrent = result.province;
-                    }
-                }
-                if (_this.loadingNumber != 100) {
-                    _this.getProgress();
-                }
-            });
-        }, 4000);
-    };
-    AppComponent.prototype.getSubastas = function () {
-        var _this = this;
-        this.subastasService.getSubastas().subscribe(function (response) {
-            _this.subastasTotal = response.subastas;
-            console.log('response: ', response);
-            if (response && response.message != 'error') {
-                _this.subastasTotal = _this.subastasTotal.map(function (subas) {
-                    // tslint:disable-next-line:radix
-                    // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
-                    var recla = _this.amountToNumber(subas.Cantidadreclamada);
-                    var tasa = _this.amountToNumber(subas.Valorsubasta);
-                    if (tasa !== null && recla !== null) {
-                        subas['porcentaje'] = Math.round((recla * 100) / tasa * 100) / 100;
-                    }
-                    else {
-                        subas['porcentaje'] = 2000;
-                    }
-                    return subas;
-                });
-            }
-            else {
-                _this.subastasTotal = [];
-            }
-            _this.subastas = _this.subastasTotal.filter(function (subas) { return subas.porcentaje <= 25; });
-            _this.orderByDatetime();
-            //this.subastas = this.subastasTotal;
-            console.log('response: ', _this.subastas);
-        });
     };
     AppComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
