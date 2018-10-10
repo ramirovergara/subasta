@@ -20,6 +20,10 @@ export class AppComponent implements OnInit {
     isValue: false,
     isPercentaje: false
   };
+  progressLoading = 0;
+  totalSubasta = 0;
+  provinceCurrent = '';
+  loadingNumber = 0;
   constructor(private subastasService: ServicesService,
     private childProcessService: ChildProcessService)  {}
 
@@ -32,7 +36,6 @@ export class AppComponent implements OnInit {
     // });
     this.subastasService.getSubastas().subscribe(response => {
       this.subastasTotal = response;
-      console.log(response);
       if (response) {
         this.subastasTotal = response.subastas.map(subas => {
             // tslint:disable-next-line:radix
@@ -52,7 +55,45 @@ export class AppComponent implements OnInit {
           console.log('response: ', this.subastas);
       }
     });
-  }
+
+        setInterval(() =>  {
+            if (this.provinceCurrent !== 'Ceuta' ) {
+                this.subastasService.getProgress().subscribe(resp => {
+                    console.log(resp);
+                    this.progressLoading = resp.progress;
+                    this.totalSubasta = resp.total;
+                    this.provinceCurrent = resp.province;
+                    this.loadingNumber = Math.round(  ((this.progressLoading * 100 ) / this.totalSubasta) * 100 ) / 100;
+                });
+                this.subastasService.getSubastas().subscribe(response => {
+                    this.subastasTotal = response;
+                    if (response) {
+                        this.subastasTotal = response.subastas.map(subas => {
+                            // tslint:disable-next-line:radix
+                            // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
+                            let recla = this.amountToNumber(subas.Cantidadreclamada);
+                            let tasa = this.amountToNumber(subas.Valorsubasta);
+                            if (tasa !== null && recla !== null) {
+                                subas['porcentaje'] = Math.round( (recla * 100) / tasa * 100 ) / 100;
+                            } else {
+                            subas['porcentaje'] = 2000;
+                            }
+                            return subas;
+                        });
+                        this.subastas = this.subastasTotal.filter(subas => subas.porcentaje <= 30);
+                        this.flags.isDate = false;
+                        this.orderByDatetime();
+                        //this.subastas = this.subastasTotal;
+                        console.log('response: ', this.subastas);
+                    }
+                });
+            } else {
+                this.progressLoading = this.totalSubasta;
+                this.loadingNumber = 100;
+            }
+        }, 2000);
+    }
+
 
   amountToNumber(value) {
     return value ? value.split('.').join('').replace('€', '').replace(',', '.') : null;

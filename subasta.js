@@ -132,6 +132,7 @@ casper.start('https://subastas.boe.es/', function() {
                             casper.waitForSelector('.datosSubastas', function() {
                                 var autoridadGestora = this.evaluate(getDatosSubastas);
                                 subastaInfo.Tipodesubasta = autoridadGestora.Descripcion.toLowerCase().split('mercantil').length > 1 ? 'mercantil' : subastaInfo.Tipodesubasta;
+                                subastaInfo.province = link.province;
                                 listSubasta.push(subastaInfo);
                                 progress++;
                                 fs.write("log", '{ "total": ' + total + ', "progress": ' + progress+ ', "province": "' + link.province + '" }', 'w');
