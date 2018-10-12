@@ -12,6 +12,8 @@ export class TypePipe implements PipeTransform {
       return 'Voluntaria';
     } else if (value.trim() === 'JUDICIAL CONCURSAL') {
       return 'Concursal';
+    } if (value.trim() === 'AGENCIA TRIBUTARIA' ) {
+      return 'Tributaria';
     }
     return value;
   }

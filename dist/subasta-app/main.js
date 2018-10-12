@@ -41,7 +41,7 @@ module.exports = ".app {\n    padding-top: 50px;\n    background: #fcffff;\n    
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"app\">\n  \n  <div class=\"container\">\n    <div class=\"row center\">\n        <h5 class=\"center width-100\">\n          <span class=\"badge badge-dark\">{{progressLoading}} de {{totalSubasta}} </span>\n           subastas analizadas\n          actualmente analizando \n          <span class=\"badge badge-dark\">{{provinceCurrent}}</span>\n      </h5>\n    </div>\n    <div class=\"progress\" *ngIf=\"loadingNumber != 100\">\n      <div class=\"progress-bar progress-bar-striped progress-bar-animated\" \n        role=\"progressbar\" \n        [ngStyle]=\"{'width': loadingNumber + '%'}\"\n        aria-valuenow=\"50\" \n        aria-valuemin=\"0\" \n        aria-valuemax=\"100\">{{loadingNumber}}%\n      </div>\n    </div>\n    <div class=\"row align-items-end\">\n        <div class=\"col-md-3 offset-md-9 input-group mb-3\">\n          <input #percentaje type=\"text\" class=\"form-control\" \n            placeholder=\"porcetanje maximo\" \n            aria-label=\"porcetanje maximo\" \n            aria-describedby=\"basic-addon2\" value=\"25\">\n          <div class=\"input-group-append\">\n            <button class=\"btn btn-dark\" type=\"button\" (click)=\"filterPercentaje(percentaje.value)\">buscar %</button>\n          </div>\n        </div>\n    </div>\n    \n    <table class=\"table table-striped\">\n      <thead class=\"thead-dark\">\n          <th scope=\"col\">#</th>\n          <th scope=\"col\" (click)=\"orderByText('Identificador', 'isId')\">Identificador</th>\n          <th scope=\"col\" (click)=\"orderByDatetime()\">Fecha END</th>\n          <th scope=\"col\" (click)=\"orderByText('Tipodesubasta', 'isType')\">Tipo subasta</th>\n          <th class=\"number\" scope=\"col\" (click)=\"orderByNumber('Cantidadreclamada', 'isRequest')\">Reclamado</th>\n          <th class=\"number\" scope=\"col\" (click)=\"orderByNumber('Valorsubasta', 'isValue')\">Valor subasta</th>\n          <th class=\"number\" scope=\"col\" (click)=\"orderByNumber('porcentaje', 'isPercentaje')\">%</th>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let subasta of subastas; let i = index\">\n          <td class=\"title\"> {{i + 1}}</td>\n          <td ><a href={{subasta.link}}>{{subasta.Identificador}}</a> </td>\n          <td >{{subasta.Fechadeconclusion | formatDate}}</td>\n          <td >{{subasta.Tipodesubasta | type }}</td>\n          <td class=\"number\">{{subasta.Cantidadreclamada | typeNumber}}</td>\n          <td class=\"number\">{{subasta.Valorsubasta | typeNumber}}</td>\n          <td class=\"number\">{{subasta.porcentaje | parseInt}}</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>"
+module.exports = "<div class=\"app\">\n  \n  <div class=\"container\">\n    <div class=\"row center\">\n        <h5 class=\"center width-100\">\n          <span class=\"badge badge-dark\">{{progressLoading}} de {{totalSubasta}} </span>\n           subastas analizadas\n          actualmente analizando \n          <span class=\"badge badge-dark\">{{provinceCurrent}}</span>\n      </h5>\n    </div>\n    <div class=\"progress\" *ngIf=\"loadingNumber != 100\">\n      <div class=\"progress-bar progress-bar-striped progress-bar-animated\" \n        role=\"progressbar\" \n        [ngStyle]=\"{'width': loadingNumber + '%'}\"\n        aria-valuenow=\"50\" \n        aria-valuemin=\"0\" \n        aria-valuemax=\"100\">{{loadingNumber}}%\n      </div>\n    </div>\n    <div class=\"row align-items-end\">\n        <div class=\"col-md-3 offset-md-9 input-group mb-3\">\n          <input #percentaje type=\"text\" class=\"form-control\" \n            placeholder=\"porcetanje maximo\" \n            aria-label=\"porcetanje maximo\" \n            aria-describedby=\"basic-addon2\" value=\"25\">\n          <div class=\"input-group-append\">\n            <button class=\"btn btn-dark\" type=\"button\" (click)=\"filterPercentaje(percentaje.value)\">buscar %</button>\n          </div>\n        </div>\n    </div>\n    \n    <table class=\"table table-striped\">\n      <thead class=\"thead-dark\">\n          <th scope=\"col\">#</th>\n          <th scope=\"col\" (click)=\"orderByText('Identificador', 'isId')\">Identificador</th>\n          <th scope=\"col\" (click)=\"orderByDatetime()\">Fecha END</th>\n          <th scope=\"col\" (click)=\"orderByText('Tipodesubasta', 'isType')\">Tipo subasta</th>\n          <th scope=\"col\" (click)=\"orderByText('Tipodesubasta', 'isType')\">Provincia</th>\n          <th class=\"number\" scope=\"col\" (click)=\"orderByNumber('Cantidadreclamada', 'isRequest')\">Reclamado</th>\n          <th class=\"number\" scope=\"col\" (click)=\"orderByNumber('Valorsubasta', 'isValue')\">Valor subasta</th>\n          <th class=\"number\" scope=\"col\" (click)=\"orderByNumber('porcentaje', 'isPercentaje')\">%</th>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let subasta of subastas; let i = index\">\n          <td class=\"title\"> {{i + 1}}</td>\n          <td ><a href={{subasta.link}}>{{subasta.Identificador}}</a> </td>\n          <td >{{subasta.Fechadeconclusion | formatDate}}</td>\n          <td >{{subasta.Tipodesubasta | type }}</td>\n          <td>{{ subasta.province }} </td> \n          <td class=\"number\">{{subasta.Cantidadreclamada | typeNumber}}</td>\n          <td class=\"number\">{{subasta.Valorsubasta | typeNumber}}</td>\n          <td class=\"number\">{{subasta.porcentaje | parseInt}}</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -86,6 +86,10 @@ var AppComponent = /** @class */ (function () {
             isValue: false,
             isPercentaje: false
         };
+        this.progressLoading = 0;
+        this.totalSubasta = 0;
+        this.provinceCurrent = '';
+        this.loadingNumber = 0;
     }
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -97,32 +101,76 @@ var AppComponent = /** @class */ (function () {
         // });
         this.subastasService.getSubastas().subscribe(function (response) {
             _this.subastasTotal = response;
-            _this.subastasTotal = _this.subastasTotal.map(function (subas) {
-                // tslint:disable-next-line:radix
-                // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
-                var recla = _this.amountToNumber(subas.Cantidadreclamada);
-                var tasa = _this.amountToNumber(subas.Valorsubasta);
-                if (tasa !== null && recla !== null) {
-                    subas['porcentaje'] = Math.round((recla * 100) / tasa * 100) / 100;
-                }
-                else {
-                    subas['porcentaje'] = 2000;
-                }
-                return subas;
-            });
-            _this.subastas = _this.subastasTotal.filter(function (subas) { return subas.porcentaje <= 30; });
-            _this.orderByDatetime();
-            //this.subastas = this.subastasTotal;
-            console.log('response: ', _this.subastas);
+            if (response) {
+                _this.subastasTotal = response.subastas.map(function (subas) {
+                    // tslint:disable-next-line:radix
+                    // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
+                    //let recla = this.amountToNumber(subas.Cantidadreclamada);
+                    //let tasa = this.amountToNumber(subas.Valorsubasta);
+                    //if (tasa !== null && recla !== null) {
+                    subas['porcentaje'] = subas.Cantidadreclamada; //Math.round( (recla * 100) / tasa * 100 ) / 100;
+                    // } else {
+                    //   subas['porcentaje'] = 2000;
+                    // }
+                    return subas;
+                });
+                //this.subastas = this.subastasTotal.filter(subas => subas.porcentaje <= 3000);
+                _this.orderByDatetime();
+                _this.subastas = _this.subastasTotal;
+                console.log('response: ', _this.subastas);
+            }
         });
+        setInterval(function () {
+            if (_this.provinceCurrent !== 'Ceuta') {
+                _this.subastasService.getProgress().subscribe(function (resp) {
+                    console.log(resp);
+                    _this.progressLoading = resp.progress;
+                    _this.totalSubasta = resp.total;
+                    _this.provinceCurrent = resp.province;
+                    _this.loadingNumber = Math.round(((_this.progressLoading * 100) / _this.totalSubasta) * 100) / 100;
+                });
+                _this.subastasService.getSubastas().subscribe(function (response) {
+                    _this.subastasTotal = response;
+                    if (response) {
+                        _this.subastasTotal = response.subastas.map(function (subas) {
+                            // tslint:disable-next-line:radix
+                            // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
+                            var recla = _this.amountToNumber(subas.Cantidadreclamada.split(',')[0]);
+                            var tasa = _this.amountToNumber(subas.Valorsubasta);
+                            // if (tasa !== null && recla !== null) {
+                            subas['porcentaje'] = 'subas.Valorsubasta'; // Math.round( (recla * 100) / tasa * 100 ) / 100;
+                            // } else {
+                            // subas['porcentaje'] = 2000;
+                            // }
+                            return subas;
+                        });
+                        //this.subastas = this.subastasTotal.filter(subas => subas.porcentaje <= 30);
+                        _this.flags.isDate = false;
+                        _this.orderByDatetime();
+                        _this.subastas = _this.subastasTotal;
+                        console.log('response: ', _this.subastas);
+                    }
+                });
+            }
+            else {
+                _this.progressLoading = _this.totalSubasta;
+                _this.loadingNumber = 100;
+            }
+        }, 2000);
     };
     AppComponent.prototype.amountToNumber = function (value) {
         return value ? value.split('.').join('').replace('€', '').replace(',', '.') : null;
     };
     AppComponent.prototype.orderByDatetime = function () {
         this.subastas.sort(function (a, b) {
-            var first = new Date(b.Fechadeconclusion.split('ISO:')[1].replace(')', '').trim()).getTime();
-            var second = new Date(a.Fechadeconclusion.split('ISO:')[1].replace(')', '').trim()).getTime();
+            var first;
+            var second;
+            if (b.Fechadeconclusion) {
+                first = new Date(b.Fechadeconclusion.split('ISO:')[1].replace(')', '').trim()).getTime();
+            }
+            if (a.Fechadeconclusion) {
+                second = new Date(a.Fechadeconclusion.split('ISO:')[1].replace(')', '').trim()).getTime();
+            }
             return first - second;
         });
         if (this.flags.isDate) {
@@ -260,7 +308,12 @@ var FormatDatePipe = /** @class */ (function () {
     function FormatDatePipe() {
     }
     FormatDatePipe.prototype.transform = function (value, args) {
-        return value.split(':')[0].split('-').join('/').trim() + 'h';
+        if (value) {
+            return value.split(':')[0].split('-').join('/').trim() + 'h';
+        }
+        else {
+            return '';
+        }
     };
     FormatDatePipe = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Pipe"])({
@@ -296,7 +349,12 @@ var ParseIntPipe = /** @class */ (function () {
     function ParseIntPipe() {
     }
     ParseIntPipe.prototype.transform = function (value, args) {
-        return parseInt(value);
+        if (value) {
+            return parseInt(value.split('.').join(''));
+        }
+        else {
+            return '---';
+        }
     };
     ParseIntPipe = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Pipe"])({

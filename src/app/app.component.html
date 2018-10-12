@@ -36,10 +36,10 @@
           <th scope="col" (click)="orderByText('Identificador', 'isId')">Identificador</th>
           <th scope="col" (click)="orderByDatetime()">Fecha END</th>
           <th scope="col" (click)="orderByText('Tipodesubasta', 'isType')">Tipo subasta</th>
-          <th scope="col" (click)="orderByText('Tipodesubasta', 'isType')">Provincia</th>
+          <th scope="col" (click)="orderByText('province', 'isProvince')">Provincia</th>
           <th class="number" scope="col" (click)="orderByNumber('Cantidadreclamada', 'isRequest')">Reclamado</th>
           <th class="number" scope="col" (click)="orderByNumber('Valorsubasta', 'isValue')">Valor subasta</th>
-          <th class="number" scope="col" (click)="orderByNumber('porcentaje', 'isPercentaje')">%</th>
+          <th class="number" scope="col" (click)="orderByNumberReal('porcentaje', 'isPercentaje')">%</th>
       </thead>
       <tbody>
       <tr *ngFor="let subasta of subastas; let i = index">
@@ -50,7 +50,7 @@
           <td>{{ subasta.province }} </td> 
           <td class="number">{{subasta.Cantidadreclamada | typeNumber}}</td>
           <td class="number">{{subasta.Valorsubasta | typeNumber}}</td>
-          <td class="number">{{subasta.porcentaje | parseInt}}</td>
+          <td class="number">{{subasta.porcentaje | noApply}}</td>
         </tr>
       </tbody>
     </table>

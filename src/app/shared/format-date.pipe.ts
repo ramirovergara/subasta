@@ -6,7 +6,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FormatDatePipe implements PipeTransform {
 
   transform(value: any, args?: any): any {
-    return value.split(':')[0].split('-').join('/').trim() + 'h';
+    if (value) {
+      return value.split(':')[0].split('-').join('/').trim() + 'h';
+    } else {
+      return ''
+    }
   }
 
 }

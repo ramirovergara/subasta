@@ -6,7 +6,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ParseIntPipe implements PipeTransform {
 
   transform(value: any, args?: any): any {
-    return parseInt(value);
+    if (value) {
+      return parseInt(value.split('.').join(''));
+    } else {
+      return '---';
+    }
   }
 
 }

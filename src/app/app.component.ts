@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
     isType: false,
     isDeposit: false,
     isRequest: false,
+    isProvince: false,
     isValue: false,
     isPercentaje: false
   };
@@ -42,66 +43,79 @@ export class AppComponent implements OnInit {
             // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
             let recla = this.amountToNumber(subas.Cantidadreclamada);
             let tasa = this.amountToNumber(subas.Valorsubasta);
-            if (tasa !== null && recla !== null) {
-                subas['porcentaje'] = Math.round( (recla * 100) / tasa * 100 ) / 100;
+            if (tasa !== null && recla !== null && !tasa.includes('Ver valor de subasta')) {
+                subas['porcentaje'] = subas['porcentaje'] = Math.round( (parseFloat(recla) * 100) / parseFloat(tasa) );
             } else {
-              subas['porcentaje'] = 2000;
+               subas['porcentaje'] = 999999999;
             }
             return subas;
           });
           this.subastas = this.subastasTotal.filter(subas => subas.porcentaje <= 30);
           this.orderByDatetime();
-          //this.subastas = this.subastasTotal;
+          this.subastas = this.subastasTotal;
           console.log('response: ', this.subastas);
       }
     });
 
-        setInterval(() =>  {
-            if (this.provinceCurrent !== 'Ceuta' ) {
-                this.subastasService.getProgress().subscribe(resp => {
-                    console.log(resp);
-                    this.progressLoading = resp.progress;
-                    this.totalSubasta = resp.total;
-                    this.provinceCurrent = resp.province;
-                    this.loadingNumber = Math.round(  ((this.progressLoading * 100 ) / this.totalSubasta) * 100 ) / 100;
-                });
-                this.subastasService.getSubastas().subscribe(response => {
-                    this.subastasTotal = response;
-                    if (response) {
-                        this.subastasTotal = response.subastas.map(subas => {
-                            // tslint:disable-next-line:radix
-                            // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
-                            let recla = this.amountToNumber(subas.Cantidadreclamada);
-                            let tasa = this.amountToNumber(subas.Valorsubasta);
-                            if (tasa !== null && recla !== null) {
-                                subas['porcentaje'] = Math.round( (recla * 100) / tasa * 100 ) / 100;
-                            } else {
-                            subas['porcentaje'] = 2000;
-                            }
-                            return subas;
-                        });
-                        this.subastas = this.subastasTotal.filter(subas => subas.porcentaje <= 30);
-                        this.flags.isDate = false;
-                        this.orderByDatetime();
-                        //this.subastas = this.subastasTotal;
-                        console.log('response: ', this.subastas);
-                    }
-                });
-            } else {
-                this.progressLoading = this.totalSubasta;
-                this.loadingNumber = 100;
-            }
-        }, 2000);
+      setInterval(() =>  {
+          if (this.provinceCurrent !== 'Ceuta' ) {
+              this.subastasService.getProgress().subscribe(resp => {
+                  console.log(resp);
+                  this.progressLoading = resp.progress;
+                  this.totalSubasta = resp.total;
+                  this.provinceCurrent = resp.province;
+                  this.loadingNumber = Math.round(  ((this.progressLoading * 100 ) / this.totalSubasta) * 100 ) / 100;
+              });
+              this.subastasService.getSubastas().subscribe(response => {
+                  this.subastasTotal = response;
+                  if (response) {
+                      this.subastasTotal = response.subastas.map(subas => {
+                          // tslint:disable-next-line:radix
+                          // subas['porcentaje'] =  Math.round( ( parseInt(subas.Cantidadreclamada) * 100 ) / parseInt(subas.Tasacion));
+                          let recla;
+                          if (subas.Cantidadreclamada) {
+                            recla = this.amountToNumber(subas.Cantidadreclamada);
+                          }
+                          let tasa;
+                          if (subas.Valorsubasta) {
+                            tasa = this.amountToNumber(subas.Valorsubasta);
+                          }
+                          if (tasa !== null && recla !== null && !tasa.includes('Ver valor de subasta')) {
+                              subas['porcentaje'] = Math.round( (parseFloat(recla) * 100) / parseFloat(tasa) );
+                          } else {
+                            subas['porcentaje'] = 999999999;
+                          }
+                          return subas;
+                      });
+                      this.subastas = this.subastasTotal.filter(subas => subas.porcentaje <= 30);
+                      this.flags.isDate = false;
+                      this.orderByDatetime();
+                      this.subastas = this.subastasTotal;
+                      console.log('response: ', this.subastas);
+                  }
+              });
+          } else {
+              this.progressLoading = this.totalSubasta;
+              this.loadingNumber = 100;
+          }
+      }, 2000);
     }
 
 
   amountToNumber(value) {
     return value ? value.split('.').join('').replace('€', '').replace(',', '.') : null;
   }
+
   orderByDatetime() {
     this.subastas.sort(function(a, b) {
-      const first = new Date(b.Fechadeconclusion.split('ISO:')[1].replace(')', '').trim() ).getTime();
-      const second = new Date(a.Fechadeconclusion.split('ISO:')[1].replace(')', '').trim() ).getTime();
+      let first;
+      let second;
+      if (b.Fechadeconclusion) {
+        first = new Date(b.Fechadeconclusion.split('ISO:')[1].replace(')', '').trim() ).getTime();
+      }
+      if (a.Fechadeconclusion) {
+        second = new Date(a.Fechadeconclusion.split('ISO:')[1].replace(')', '').trim() ).getTime();
+      }
       return first - second;
     });
     if (this.flags.isDate) {
@@ -132,6 +146,18 @@ export class AppComponent implements OnInit {
   orderByNumber(value, flag) {
     this.subastas.sort(function (a, b) {
       return parseFloat((a[value] + '').split('.').join('')) - parseFloat((b[value] + '').split('.').join(''));
+
+    });
+    if (this.flags[flag] ) {
+      this.subastas.reverse();
+    }
+    this.flags[flag] = !this.flags[flag];
+  }
+
+  orderByNumberReal(value, flag) {
+    this.subastas.sort(function (a, b) {
+      return a[value] - b[value];
+
     });
     if (this.flags[flag] ) {
       this.subastas.reverse();

@@ -8,6 +8,8 @@ import { FormatDatePipe } from './shared/format-date.pipe';
 import { TypePipe } from './shared/pipes/type.pipe';
 import { TypeNumberPipe } from './shared/type-number.pipe';
 import { ParseIntPipe } from './shared/pipes/parse-int.pipe';
+import { NoApplyPipe } from './shared/pipes/no-apply.pipe';
+import { ByLotesPipe } from './shared/pipes/by-lotes.pipe';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { ParseIntPipe } from './shared/pipes/parse-int.pipe';
     FormatDatePipe,
     TypePipe,
     TypeNumberPipe,
-    ParseIntPipe
+    ParseIntPipe,
+    NoApplyPipe,
+    ByLotesPipe
   ],
   imports: [
     BrowserModule,

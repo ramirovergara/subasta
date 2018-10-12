@@ -164,11 +164,12 @@ casper.start('https://subastas.boe.es/', function() {
                                     // });
                                     var subastaInfo = this.evaluate(getDatosSubastas);
                                     subastaInfo.link = this.getCurrentUrl();
+                                    subastaInfo.province = link.province;
+                                    listSubasta.push(subastaInfo);
                                     //console.log(JSON.stringify(subastaInfo));
                                     progress++;
                                     fs.write("log", ' { "total": ' + total + ', "progress":' + progress + ' } ', 'w');
                                     fs.write("subasta.json", JSON.stringify(listSubasta), 'w');
-                                    listSubasta.push(subastaInfo);
                                 });
                             });
 
